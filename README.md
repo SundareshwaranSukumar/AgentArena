@@ -1,96 +1,77 @@
-# AgentArena-Amadeus
-
-Autonomous AI agent for [Agent Arena](https://agent-arena.dev) — register, solve progressively harder MCP tasks, level up on scores ≥ 70, and export evaluation reports.
-
-Built from the [official tutorial](https://tutorial.agent-arena.dev/) with patterns from the [presentation reference bot](https://github.com/xprilion/agent-arena-bot).
-
-## Problem → Solution
-
-| | |
-|---|---|
-| **Problem** | Build an autonomous agent that competes on Agent Arena via MCP tool calls only |
-| **Solution** | Google ADK + FastMCP loop with dynamic prompts, helper tools, Traceloop traces, and JSON evaluation export |
-| **Deploy** | GCP Cloud Run Job for batch execution and parallel scaling |
-
-Full details: [docs/PROBLEM.md](docs/PROBLEM.md) · [docs/GUIDE.md](docs/GUIDE.md) · [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
-
-## Quick Start
-
-```bash
-cp .env.example .env          # set GEMINI_API_KEY + ARENA_ID_TOKEN
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-python agent.py
-```
-
-**Tokens:** Gemini key from [aistudio.google.com](https://aistudio.google.com) · Arena JWT from [agent-arena.dev](https://agent-arena.dev) (DevTools → Application → Storage)
-
-## Project Structure
-
-```
-agent.py          # Main agent — run this
-prompts.py        # Task-type detection + dynamic prompts
-config.py         # Environment configuration
-evaluation.py     # Scoreboard + JSON report export
-tracing.py        # Traceloop / OpenTelemetry
-runs/             # Evaluation reports (gitignored)
-deploy/           # GCP Cloud Run Job manifests
-Dockerfile        # Container image
-cloudbuild.yaml   # GCP build + deploy
-docs/             # Problem statement, guide, deployment
-```
-
-## Features
-
-- **Tutorial-compliant** — four MCP Arena tools + helper tools (`web_search`, `calculate`, `run_python`)
-- **Presentation patterns** — task-type prompts, recovery turns, scoreboard ([reference](https://github.com/xprilion/agent-arena-bot))
-- **Tracing** — Traceloop with run/task/execution correlation IDs
-- **Evaluation** — JSON report per run (`runs/<run_id>.json`) with pass rate and level history
-- **GCP-ready** — Dockerfile + Cloud Run Job + Cloud Build pipeline
-
-## Configuration
-
-All settings via environment variables (see `.env.example`):
-
-```bash
-AGENT_NAME=AgentArena-Amadeus-v1
-MODEL=gemini-2.0-flash
-MAX_TASKS=20
-TEMPERATURE=0.1
-TRACELOOP_API_KEY=...          # optional
-```
-
-## Example Output
-
-```
-════════════════════════════════════════════════════════════
-  AGENT ARENA — AgentArena-Amadeus-v1
-  Model: gemini-2.0-flash  |  Max tasks: 20
-════════════════════════════════════════════════════════════
-
-[12:01:03] 📝 [REGISTER] agent_id=abc123 level=1
-[12:01:15] 📋 [TASK] #1 | Implement binary search | CODE
-[12:02:40] 🏆 [SCORE] 88/100 🚀 LEVEL_UP!
-
-────────────────────────────────────────────────────────────
-  SCOREBOARD (run a1b2c3d4)  model: gemini-2.0-flash
-  Current Level : 2
-  Total Score   : 88
-────────────────────────────────────────────────────────────
-
-[12:05:00] ✅ [DONE] Evaluation report → runs/a1b2c3d4-....json
-```
-
-## Deploy to GCP
-
-```bash
-./deploy/setup-gcp.sh YOUR_PROJECT_ID
-gcloud builds submit --config cloudbuild.yaml
-gcloud run jobs execute agent-arena-amadeus --region=asia-southeast1
-```
-
-See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
-
-## License
-
-Apache 2.0 — see [LICENSE](LICENSE).
+# KakashiTheHatake — Agent Arena
+
+Autonomous **Google ADK + FastMCP** agent and **Cursor MCP** workflow for [Agent Arena](https://agent-arena.dev).
+
+## Production layout
+
+```
+AgentArena/
+├── agent.py              # Autonomous ADK runner
+├── config.py             # All secrets from environment (.env)
+├── arena_mcp/            # MCP bridge, poller, CLI, content organizer
+├── content/              # ★ Ship this — canonical Q&A task library (30 tasks)
+├── docs/                 # Full documentation
+├── deploy/               # GCP Cloud Run Job
+├── scripts/              # Release utilities (secret scan)
+├── SECURITY.md           # Credential handling
+├── RELEASE.md            # Release checklist
+└── runs/                 # Runtime only (gitignored except README)
+```
+
+## Active agents (7)
+
+| Label | Name | Agent ID | Level |
+|-------|------|----------|-------|
+| agent-1 | KakashiTheHatake-R2 | `ODPs4yeASTy9LMqftdK7` | 8 |
+| agent-2 | KakashiTheHatake-Cursor-R2 | `D7CfR6Pg35T6ZtLn76e3` | 6 |
+| agent-3 | KakashiTheHatake-Validated | `ZBpREutq1QTfZmMYuQvT` | 5 |
+| agent-4 | KakashiTheHatake-MaxScore | `7t1mF2xWrek9Db4yNaPt` | 7 |
+| agent-5 | KakashiTheHatake-FinalAgent | `f7Tlu9Bk9R6qkKPbQH8V` | 6 |
+| agent-6 | KakashiTheHatake-CompleteRun | `xKTGUkRCYRJOXLPDWpJe` | 6 |
+| agent-7 | KakashiTheHatake-AllLevels | `jnGYcUdZ3WVyptt6tBwq` | 6 |
+
+Config: [`arena_mcp/agents.json`](arena_mcp/agents.json) — copy [`agents.json.example`](arena_mcp/agents.json.example) for new setups.
+
+## Quick start
+
+```powershell
+copy .env.example .env          # EPHEMERAL_JWT, GEMINI_API_KEY, … (never commit .env)
+pip install -r requirements.txt
+python validate.py
+
+# Monitor all agents (until FINISH)
+python arena_mcp\cursor_poll.py
+
+# One-shot Arena CLI
+python arena_mcp\cursor_run.py get <agent_id>
+python arena_mcp\cursor_run.py submit <agent_id> <task_id> content\tasks\<slug>\submission.md
+```
+
+## Task library (release artifact)
+
+**30 tasks** with verified submissions:
+
+```powershell
+python arena_mcp\organize_content.py   # rebuild content/ from runs/
+```
+
+Browse [`content/tasks/`](content/tasks/) or [`content/manifest.json`](content/manifest.json).
+
+## Security & release
+
+```powershell
+python scripts\check_secrets.py     # scan for leaked keys before git push
+```
+
+See [SECURITY.md](SECURITY.md) and [RELEASE.md](RELEASE.md).
+
+## Documentation
+
+| Doc | Contents |
+|-----|----------|
+| [docs/README.md](docs/README.md) | Index |
+| [docs/CURSOR.md](docs/CURSOR.md) | Cursor MCP workflow, 7-agent polling |
+| [docs/GUIDE.md](docs/GUIDE.md) | `agent.py`, scoring, troubleshooting |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | GCP deploy |
+
+Say **FINISH** to stop background monitoring.

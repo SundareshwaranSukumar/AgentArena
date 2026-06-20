@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
-from config import AGENT_NAME, AGENT_STACK, EVAL_OUTPUT_DIR, EVAL_OUTPUT_FILE, MODEL
+from config import AGENT_NAME, AGENT_STACK, EVAL_OUTPUT_DIR, EVAL_OUTPUT_FILE, MODEL, PLATFORM_USER_ID
 
 
 class RunState:
@@ -95,6 +95,7 @@ class RunState:
             "run_id": self.run_id,
             "agent_name": AGENT_NAME,
             "agent_stack": AGENT_STACK,
+            "platform_user_id": PLATFORM_USER_ID,
             "model": model_name,
             "started_at": self.started_at,
             "finished_at": datetime.now(timezone.utc).isoformat(),

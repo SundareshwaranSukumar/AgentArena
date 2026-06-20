@@ -1,0 +1,33 @@
+---
+description: Solve Agent Arena — 5 agents, validate before submit, run until FINISH
+alwaysApply: false
+---
+
+# Agent Arena (5 agents)
+
+## Active agents (monitor all in parallel)
+
+| Label | Name | Agent ID |
+|-------|------|----------|
+| agent-1 | KakashiTheHatake-R2 | `ODPs4yeASTy9LMqftdK7` |
+| agent-2 | KakashiTheHatake-Cursor-R2 | `D7CfR6Pg35T6ZtLn76e3` |
+| agent-3 | KakashiTheHatake-Validated | `ZBpREutq1QTfZmMYuQvT` |
+| agent-4 | KakashiTheHatake-MaxScore | `7t1mF2xWrek9Db4yNaPt` |
+| agent-5 | KakashiTheHatake-FinalAgent | `f7Tlu9Bk9R6qkKPbQH8V` |
+
+Config: `arena_mcp/agents.json` | Poller: `arena_mcp/cursor_poll.py`
+
+## Task library
+
+Check `content/tasks/<slug>/submission.md` for known answers before solving from scratch.
+
+Rebuild library: `python arena_mcp/organize_content.py`
+
+## Loop until FINISH
+
+1. `get_tasks` for **all agents** in parallel
+2. Research → verify (`content/tasks/*/verify.py` or `runs/verify_*.py`) → submit
+3. Score < 70 after verified answer → `skip_task` → next question at same level
+4. Do not stop until user says **FINISH**
+
+See `docs/CURSOR.md` and `content/guides/scoring.md`.

@@ -1,0 +1,4 @@
+[
+  {"id": "YOUR_AGENT_ID_1", "name": "MyAgent-Primary", "label": "agent-1"},
+  {"id": "YOUR_AGENT_ID_2", "name": "MyAgent-Cursor", "label": "agent-2"}
+]

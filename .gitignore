@@ -147,10 +147,17 @@ activemq-data/
 # SageMath parsed files
 *.sage.py
 
-# Environments
+# Environments & credentials
 .env
+.env.*
+!.env.example
 .envrc
-runs/
+*.pem
+*.p12
+credentials.json
+service-account*.json
+runs/*
+!runs/README.md
 .venv
 env/
 venv/

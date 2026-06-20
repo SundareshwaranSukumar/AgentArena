@@ -1,0 +1,9 @@
+[
+  {"id": "ODPs4yeASTy9LMqftdK7", "name": "KakashiTheHatake-R2", "label": "agent-1"},
+  {"id": "D7CfR6Pg35T6ZtLn76e3", "name": "KakashiTheHatake-Cursor-R2", "label": "agent-2"},
+  {"id": "ZBpREutq1QTfZmMYuQvT", "name": "KakashiTheHatake-Validated", "label": "agent-3"},
+  {"id": "7t1mF2xWrek9Db4yNaPt", "name": "KakashiTheHatake-MaxScore", "label": "agent-4"},
+  {"id": "f7Tlu9Bk9R6qkKPbQH8V", "name": "KakashiTheHatake-FinalAgent", "label": "agent-5"},
+  {"id": "xKTGUkRCYRJOXLPDWpJe", "name": "KakashiTheHatake-CompleteRun", "label": "agent-6"},
+  {"id": "jnGYcUdZ3WVyptt6tBwq", "name": "KakashiTheHatake-AllLevels", "label": "agent-7"}
+]

@@ -1,0 +1,43 @@
+{
+  "audited_at": "2026-06-20T09:03:00+00:00",
+  "note": "skip_task skips a TASK at the current level, not a LEVEL. Level-up requires score >= 70 on any task at that level.",
+  "agents_1_to_5": "See content/scores/all-agents.jsonl — mostly ALL_TASKS_ATTEMPTED at peak levels",
+  "agent-6-complete-run": {
+    "id": "xKTGUkRCYRJOXLPDWpJe",
+    "peak_level": 6,
+    "scores": [
+      {"level": 1, "task": "Motion", "score": 20, "skipped": true},
+      {"level": 1, "task": "Log extraction", "score": 70, "level_up": true},
+      {"level": 2, "task": "NL2SQL", "score": 70, "level_up": true},
+      {"level": 3, "task": "Intersection", "score": 80, "level_up": true},
+      {"level": 4, "task": "Saga", "score": 80, "level_up": true},
+      {"level": 5, "task": "Consensus", "score": 88, "level_up": true},
+      {"level": 6, "task": "Ticker", "score": 60, "skipped": true, "fix": "content/tasks/ticker/submission.md now answer-only c2"}
+    ]
+  },
+  "agent-7-all-levels": {
+    "id": "jnGYcUdZ3WVyptt6tBwq",
+    "peak_level": 6,
+    "scores": [
+      {"level": 1, "task": "Motion", "score": 10, "skipped": true},
+      {"level": 1, "task": "Log extraction (refined)", "score": 75, "level_up": true},
+      {"level": 2, "task": "JS Memory Leak", "score": 65, "skipped": true},
+      {"level": 2, "task": "Portfolio", "score": 60, "skipped": true},
+      {"level": 2, "task": "LRU TypeScript", "score": 15, "skipped": true, "fix": "TypeScript restored in lru-cache-ts"},
+      {"level": 2, "task": "NL2SQL", "score": 80, "level_up": true},
+      {"level": 3, "task": "OldAbe", "score": 45, "skipped": true},
+      {"level": 3, "task": "BCB540", "score": 80, "level_up": true},
+      {"level": 4, "task": "Circuit Breaker", "score": 80, "level_up": true},
+      {"level": 5, "task": "Swarm Optimization", "score": 65, "skipped": true},
+      {"level": 5, "task": "Swarm Optimization retry", "score": 75, "level_up": true},
+      {"level": 6, "status": "ALL_TASKS_ATTEMPTED"}
+    ]
+  },
+  "content_refinements": [
+    "basic-log-extraction/submission-refined.md — IP only",
+    "ticker/submission.md — c2 only",
+    "lru-cache-ts/submission.md — TypeScript (not Python)",
+    "lru-cache-py/submission.md — Python for PythonCodeGen",
+    "mmv1/submission-refined.md — concise OCR answer"
+  ]
+}

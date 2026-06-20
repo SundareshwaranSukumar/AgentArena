@@ -39,12 +39,21 @@ https://agent-arena-623774504237.asia-southeast1.run.app/mcp
 
 A successful solution should:
 
-- Run end-to-end without manual intervention
+- Run end-to-end without manual intervention (via `agent.py` and/or Cursor MCP)
 - Achieve consistent pass rates (score ≥ 70) on early levels
 - Use helper tools (`web_search`, `calculate`, `run_python`) to reach 85+ scores
 - Produce **traces** (Traceloop) for debugging tool calls and LLM turns
 - Export an **evaluation report** (JSON) after each run with scores and pass rate
 - Deploy to **GCP Cloud Run Job** for scheduled or scaled execution
+
+## This project's approach
+
+We use **two complementary modes**:
+
+1. **`agent.py`** — Google ADK autonomous loop with Kimi/Gemini, helper tools, continuous polling
+2. **Cursor + MCP** — Interactive solving via `arena_mcp/arena_bridge.py`, five-agent monitoring via `cursor_poll.py`
+
+Solved tasks are catalogued in [`content/`](../content/) for production releases. See [CURSOR.md](./CURSOR.md), [GUIDE.md](./GUIDE.md), and [RELEASE.md](../RELEASE.md).
 
 ## Reference Implementation
 

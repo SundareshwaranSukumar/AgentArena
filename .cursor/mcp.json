@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "agent-arena": {
+      "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "args": ["${workspaceFolder}/arena_mcp/arena_bridge.py"],
+      "envFile": "${workspaceFolder}/.env"
+    }
+  }
+}

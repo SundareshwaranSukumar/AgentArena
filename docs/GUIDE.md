@@ -1,8 +1,8 @@
 # Solution Guide
 
-## How We Solve It
+Autonomous **Google ADK + FastMCP** agent following the [official tutorial](https://tutorial.agent-arena.dev/) and [presentation reference bot](https://github.com/xprilion/agent-arena-bot).
 
-This project implements a **Google ADK + FastMCP** autonomous agent following the [official tutorial](https://tutorial.agent-arena.dev/) and patterns from the [presentation reference bot](https://github.com/xprilion/agent-arena-bot).
+> **Also using Cursor?** See [CURSOR.md](./CURSOR.md) for the dual-agent MCP workflow, polling, and submission strategy.
 
 ## Architecture
 
@@ -18,82 +18,99 @@ This project implements a **Google ADK + FastMCP** autonomous agent following th
 │  └─────────────┘  └──────────────┘  └───────────────┘  │
 │                          │                              │
 │  Google ADK LlmAgent ────┼── Arena tools (MCP)          │
-│                          └── Helper tools (local)       │
+│  (+ Kimi via LiteLLM)    └── Helper tools (local)      │
 └──────────────────────────┬──────────────────────────────┘
                            │ FastMCP HTTP
                            ▼
               Agent Arena MCP Server (/mcp)
 ```
 
-## What You Need To Do
+## Dual-mode operation
 
-### Step 1 — Get credentials
+| Mode | Entry | Best for |
+|------|-------|----------|
+| **Autonomous** | `python agent.py` | Hands-off runs, traced tool calls via ADK |
+| **Cursor MCP** | Chat + `arena_mcp/*` | Hard tasks, image OCR, manual verification |
 
-| Credential | Where |
-|------------|-------|
-| `GEMINI_API_KEY` | [Google AI Studio](https://aistudio.google.com) |
-| `ARENA_ID_TOKEN` | Sign in at [agent-arena.dev](https://agent-arena.dev) → DevTools → Application → Storage → copy Firebase JWT |
-| `TRACELOOP_API_KEY` (optional) | [Traceloop](https://app.traceloop.com) for trace visibility |
+Both modes use the same MCP endpoint and `.env` credentials. See [CURSOR.md](./CURSOR.md).
 
-### Step 2 — Configure
+## Production task library
+
+After Arena sessions, canonical Q&A is organized under [`content/`](../content/):
+
+```powershell
+python arena_mcp\organize_content.py
+```
+
+Each task has `content/tasks/<slug>/submission.md` and optional `verify.py`. Ship `content/` in releases; keep ephemeral logs in `runs/` (gitignored). See [RELEASE.md](../RELEASE.md).
+
+## Credentials
+
+| Credential | Env variable | Purpose |
+|------------|--------------|---------|
+| Platform User ID | `PLATFORM_USER_ID` | Static UID — metadata & traces |
+| Ephemeral JWT | `EPHEMERAL_JWT` | MCP `idToken` (expires ~1h) |
+| Traceloop API Key | `TRACELOOP_API_KEY` | Trace export |
+| Gemini API Key | `GEMINI_API_KEY` | LLM ([AI Studio](https://aistudio.google.com)) |
+| Kimi API Key | `KIMI_API_KEY` | Optional primary LLM (`LLM_PRIMARY=kimi`) |
+
+Copy platform keys from **Identity & Trace Keys** on [agent-arena.dev](https://agent-arena.dev).
+
+**Do not** put `PLATFORM_USER_ID` in `EPHEMERAL_JWT` — the JWT is the long `eyJ…` string.
 
 ```bash
 cp .env.example .env
-# Edit .env with your keys
+# Edit .env
 ```
 
-Key settings in `config.py` (all overridable via env):
+### Key settings (`config.py`)
 
 | Variable | Purpose |
 |----------|---------|
-| `AGENT_NAME` | Leaderboard name |
-| `MODEL` | Gemini model (`gemini-2.0-flash` or `gemini-2.5-pro-preview`) |
-| `MAX_TASKS` | How many tasks to attempt per run |
+| `AGENT_NAME` | Leaderboard name (default: KakashiTheHatake) |
+| `LLM_PRIMARY` | `kimi` or `gemini` — Kimi first, Gemini fallback |
+| `MODEL` | Gemini model (`gemini-2.5-flash`, `gemini-3.5-flash`) |
+| `RUN_CONTINUOUS` | `true` — poll Arena when idle instead of exiting |
+| `MAX_TASKS` | Tasks per run (0 = unlimited in continuous mode) |
 | `TEMPERATURE` | `0.1` recommended for precision |
-| `EVAL_OUTPUT_DIR` | Where JSON evaluation reports are saved |
+| `EVAL_OUTPUT_DIR` | JSON evaluation reports (`runs/`) |
 
-### Step 3 — Run locally
+Cast AI keys (`castai_v1_…`) auto-route to `https://llm.cast.ai/openai/v1`.
+
+## Run locally
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate   # Windows: .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
+python validate.py
 python agent.py
 ```
 
-### Step 4 — Review evaluation
+### Continuous mode
 
-After each run, a JSON report is written to `runs/<run_id>.json`:
+With `RUN_CONTINUOUS=true`, the agent:
+- Polls every 30s when no tasks are available
+- Reloads `.env` while polling (refresh JWT without restart)
+- Falls back Gemini → Kimi on API errors
+- Writes checkpoint JSON to `runs/` every 10 tasks
 
-```json
-{
-  "run_id": "...",
-  "final_level": 4,
-  "total_score": 388,
-  "tasks_attempted": 4,
-  "tasks_passed": 3,
-  "average_score": 97.0,
-  "pass_rate_percent": 75.0,
-  "level_history": [...]
-}
+### Cursor continuous monitor
+
+```powershell
+python arena_mcp\cursor_poll.py   # both agents, 30s interval
 ```
 
-### Step 5 — Deploy to GCP
+Logs: `runs/cursor_poll.log` | Pending task: `runs/pending_task.json`
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md).
-
-## Run Lifecycle
-
-The agent follows this loop (tutorial + presentation bot):
+## Run lifecycle (`agent.py`)
 
 ```
 1. Bootstrap
    register_agent → get_tasks (fetch first task, do NOT submit)
 
-2. For each task (up to MAX_TASKS):
+2. For each task:
    a. Detect task type (code, debug, explain, …)
    b. Build dynamic prompt (analyze + solve + submit)
-   c. Single ADK turn with helper tools
+   c. ADK turn with helper tools (web_search, calculate, run_python)
    d. Recovery turn if submit was missed
    e. get_tasks for next challenge
 
@@ -101,37 +118,40 @@ The agent follows this loop (tutorial + presentation bot):
    report_status() → scoreboard → export JSON report
 ```
 
-## Tools Available to the LLM
+## Tools available to the LLM
 
 ### Arena MCP tools (required)
 
-| Tool | When to use |
-|------|-------------|
+| Tool | When |
+|------|------|
 | `register_agent` | Once at start |
 | `get_tasks` | Before each task |
 | `submit_task` | After solving |
 | `skip_task` | Impossible or stuck tasks |
 | `report_status` | End of run summary |
 
-### Helper tools (tutorial — boost scores)
+### Helper tools (boost scores)
 
-| Tool | When to use |
-|------|-------------|
+| Tool | When |
+|------|------|
 | `web_search` | Factual / current-info tasks |
-| `calculate` | Exact math — never guess |
+| `calculate` | Exact math |
 | `run_python` | Verify code/algorithms before submit |
 
-## Scoring Strategy
+## Scoring strategy
 
 | Tip | Impact |
 |-----|--------|
+| Use helper tools before submit | Avoids 60–65 methodology penalties |
 | Search first | 65 → 85 on factual tasks |
 | Exact math via `calculate` | Avoids LLM arithmetic errors |
-| Verify with `run_python` | Catches logic bugs before submit |
+| Verify with `run_python` | Catches logic bugs |
 | `temperature=0.1` | More precise technical answers |
-| Task-type prompts | Tailored structure per task category |
+| Task-type prompts | Tailored structure per category |
 
-## Project Files
+Level-up threshold: **score ≥ 70**.
+
+## Project files
 
 | File | Role |
 |------|------|
@@ -140,19 +160,47 @@ The agent follows this loop (tutorial + presentation bot):
 | `config.py` | Environment-based configuration |
 | `evaluation.py` | RunState, scoreboard, JSON export |
 | `tracing.py` | Traceloop / OpenTelemetry setup |
-| `Dockerfile` | Container for Cloud Run |
-| `cloudbuild.yaml` | GCP build + deploy pipeline |
+| `validate.py` | Pre-flight credential check |
+| `arena_mcp/arena_bridge.py` | Cursor stdio MCP bridge |
+| `arena_mcp/cursor_poll.py` | Dual-agent background poller |
+| `arena_mcp/cursor_run.py` | CLI get/submit/skip |
+| `arena_mcp/export_archive.py` | Archive logs and task history |
+| `runs/archive/` | Exported session data |
+
+## Evaluation reports
+
+After each run, JSON is written to `runs/<run_id>.json`:
+
+```json
+{
+  "run_id": "...",
+  "agent_id": "xvSwNAIPH6ZcazzPMLbv",
+  "final_level": 7,
+  "total_score": 1856,
+  "tasks_attempted": 6,
+  "level_history": [...]
+}
+```
+
+Full session archive: `python arena_mcp/export_archive.py`
 
 ## Troubleshooting
 
 | Issue | Fix |
 |-------|-----|
-| Token expired | Refresh `ARENA_ID_TOKEN` from web app (~1h TTL) |
+| Token expired | Refresh `EPHEMERAL_JWT` (~1h TTL) |
+| Kimi 402 credits | Falls back to Gemini; add credits or set `LLM_PRIMARY=gemini` |
+| Gemini 429/503 | Rate-limit backoff + model rotation in `agent.py` |
 | Task not submitted | Recovery turn runs automatically; check Traceloop traces |
-| Low scores | Enable helper tools; try `gemini-2.5-pro-preview` |
+| Low scores via Cursor CLI | Use MCP tools in chat or `agent.py` for traced helpers |
+| Stuck at Level 7 | See `runs/archive/agent-1-kakashithehatake/WHY-STUCK-AT-L7.md` |
 | MCP timeout | Fresh connection per call is by design |
 
-## External Links
+## Deploy to GCP
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md).
+
+## External links
 
 - [Agent Arena Platform](https://agent-arena.dev)
 - [Complete Tutorial](https://tutorial.agent-arena.dev/)

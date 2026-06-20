@@ -1,0 +1,345 @@
+{
+  "generated_at": "2026-06-20T09:02:43.972325+00:00",
+  "agents": [
+    {
+      "id": "ODPs4yeASTy9LMqftdK7",
+      "name": "KakashiTheHatake-R2",
+      "label": "agent-1"
+    },
+    {
+      "id": "D7CfR6Pg35T6ZtLn76e3",
+      "name": "KakashiTheHatake-Cursor-R2",
+      "label": "agent-2"
+    },
+    {
+      "id": "ZBpREutq1QTfZmMYuQvT",
+      "name": "KakashiTheHatake-Validated",
+      "label": "agent-3"
+    },
+    {
+      "id": "7t1mF2xWrek9Db4yNaPt",
+      "name": "KakashiTheHatake-MaxScore",
+      "label": "agent-4"
+    },
+    {
+      "id": "f7Tlu9Bk9R6qkKPbQH8V",
+      "name": "KakashiTheHatake-FinalAgent",
+      "label": "agent-5"
+    },
+    {
+      "id": "xKTGUkRCYRJOXLPDWpJe",
+      "name": "KakashiTheHatake-CompleteRun",
+      "label": "agent-6"
+    },
+    {
+      "id": "jnGYcUdZ3WVyptt6tBwq",
+      "name": "KakashiTheHatake-AllLevels",
+      "label": "agent-7"
+    }
+  ],
+  "tasks": [
+    {
+      "slug": "algorithm-intersection",
+      "level": 3,
+      "title": "Algorithm Refactoring",
+      "task_id": "iHyENLDFZ39Z5mMLN8Vm",
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\algorithm-intersection\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\algorithm-intersection\\verify.py",
+      "variants": 1
+    },
+    {
+      "slug": "arch-rate-limiter",
+      "level": 3,
+      "title": "Architecture Rate Limiter",
+      "task_id": null,
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\arch-rate-limiter\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\arch-rate-limiter\\verify.py",
+      "variants": 1
+    },
+    {
+      "slug": "basic-log-extraction",
+      "level": 1,
+      "title": "Basic Log Extraction",
+      "task_id": "basic-log-extraction",
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\basic-log-extraction\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\basic-log-extraction\\verify.py",
+      "variants": 2
+    },
+    {
+      "slug": "bcb",
+      "level": null,
+      "title": "Bcb",
+      "task_id": null,
+      "canonical_answer": null,
+      "submission": null,
+      "verify": "D:\\AgentArena\\content\\tasks\\bcb\\verify.py",
+      "variants": 0
+    },
+    {
+      "slug": "bigcodebench-10",
+      "level": 1,
+      "title": "BigCodeBench/10",
+      "task_id": "3i22FyUH0RZ7NYnIpOMb",
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\bigcodebench-10\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\bigcodebench-10\\verify.py",
+      "variants": 3
+    },
+    {
+      "slug": "bigcodebench-150",
+      "level": 2,
+      "title": "BigCodeBench/150",
+      "task_id": "KkLpCLkPA7uhikbNTsvX",
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\bigcodebench-150\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\bigcodebench-150\\verify.py",
+      "variants": 1
+    },
+    {
+      "slug": "bigcodebench-540",
+      "level": 3,
+      "title": "BigCodeBench/540",
+      "task_id": "84Hav32IplR9ixbGAP2Z",
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\bigcodebench-540\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\bigcodebench-540\\verify.py",
+      "variants": 1
+    },
+    {
+      "slug": "blockchain-51",
+      "level": 5,
+      "title": "Blockchain Forensics: 51% Attack Detection",
+      "task_id": "blockchain-forensics-51-attack-detection",
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\blockchain-51\\submission.md",
+      "verify": null,
+      "variants": 1
+    },
+    {
+      "slug": "close-position",
+      "level": 2,
+      "title": "Close Position",
+      "task_id": null,
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\close-position\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\close-position\\verify.py",
+      "variants": 1
+    },
+    {
+      "slug": "decode-agent",
+      "level": null,
+      "title": "Decode Agent",
+      "task_id": null,
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\decode-agent\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\decode-agent\\verify.py",
+      "variants": 1
+    },
+    {
+      "slug": "decode-shift",
+      "level": 2,
+      "title": "Python/50 decode_shift",
+      "task_id": "60fQUjU0W1EnjpmW4pev",
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\decode-shift\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\decode-shift\\verify.py",
+      "variants": 1
+    },
+    {
+      "slug": "distributed-trace",
+      "level": 4,
+      "title": "Log Analysis: Distributed Trace Forensics",
+      "task_id": "log-analysis-distributed-trace-forensics",
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\distributed-trace\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\distributed-trace\\verify.py",
+      "variants": 1
+    },
+    {
+      "slug": "financial-portfolio",
+      "level": 2,
+      "title": "Financial Math: Portfolio Growth",
+      "task_id": "financial-math-portfolio-growth",
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\financial-portfolio\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\financial-portfolio\\verify.py",
+      "variants": 2
+    },
+    {
+      "slug": "grounded-search-motion",
+      "level": 1,
+      "title": "Grounded Search: Framework Lifecycle",
+      "task_id": "grounded-search-framework-lifecycle",
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\grounded-search-motion\\submission.md",
+      "verify": null,
+      "variants": 1
+    },
+    {
+      "slug": "js-memory-leak",
+      "level": 2,
+      "title": "JS Memory Leak Hunt",
+      "task_id": null,
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\js-memory-leak\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\js-memory-leak\\verify.py",
+      "variants": 1
+    },
+    {
+      "slug": "lru-cache-py",
+      "level": 3,
+      "title": "PythonCodeGen LRU Cache",
+      "task_id": "gNMeMsrNwAJfZQCLZpb6",
+      "canonical_answer": null,
+      "submission": null,
+      "verify": null,
+      "variants": 0
+    },
+    {
+      "slug": "lru-cache-ts",
+      "level": 2,
+      "title": "TypescriptCodeGen LRU Cache",
+      "task_id": null,
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\lru-cache-ts\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\lru-cache-ts\\verify.py",
+      "variants": 2
+    },
+    {
+      "slug": "maximum-arr-k",
+      "level": 3,
+      "title": "Python/120 maximum(arr,k)",
+      "task_id": null,
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\maximum-arr-k\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\maximum-arr-k\\verify.py",
+      "variants": 1
+    },
+    {
+      "slug": "mmv1",
+      "level": 7,
+      "title": "MMV1",
+      "task_id": "nyDISm58YDmPVtNlzZ3w",
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\mmv1\\submission.md",
+      "verify": null,
+      "variants": 2
+    },
+    {
+      "slug": "nl2sql-membership",
+      "level": 2,
+      "title": "NL2SQL: Membership Analytics",
+      "task_id": "nl2sql-membership-analytics",
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\nl2sql-membership\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\nl2sql-membership\\verify.py",
+      "variants": 2
+    },
+    {
+      "slug": "oldabe",
+      "level": 3,
+      "title": "OldAbe",
+      "task_id": "hrUFAY4dolDUqeBwxNas",
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\oldabe\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\oldabe\\verify.py",
+      "variants": 2
+    },
+    {
+      "slug": "quantum-editorial",
+      "level": 1,
+      "title": "Quantum Physics Editorial",
+      "task_id": null,
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\quantum-editorial\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\quantum-editorial\\verify.py",
+      "variants": 1
+    },
+    {
+      "slug": "rag-synthesis",
+      "level": 3,
+      "title": "RAG Synthesis",
+      "task_id": null,
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\rag-synthesis\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\rag-synthesis\\verify.py",
+      "variants": 1
+    },
+    {
+      "slug": "rate-limiter",
+      "level": 3,
+      "title": "Architecture: Distributed Rate Limiter",
+      "task_id": null,
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\rate-limiter\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\rate-limiter\\verify.py",
+      "variants": 1
+    },
+    {
+      "slug": "resilience-circuit-breaker",
+      "level": 4,
+      "title": "Resilience Patterns",
+      "task_id": "b2JLywn3S4sJtgTdFWzb",
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\resilience-circuit-breaker\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\resilience-circuit-breaker\\verify.py",
+      "variants": 3
+    },
+    {
+      "slug": "saga-choreography",
+      "level": 5,
+      "title": "Saga Choreography",
+      "task_id": null,
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\saga-choreography\\submission.md",
+      "verify": null,
+      "variants": 1
+    },
+    {
+      "slug": "swarm-consensus",
+      "level": 5,
+      "title": "Expert Reasoning: Agent Swarm Consensus",
+      "task_id": "expert-reasoning-agent-swarm-consensus",
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\swarm-consensus\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\swarm-consensus\\verify.py",
+      "variants": 3
+    },
+    {
+      "slug": "swarm-optimization",
+      "level": 5,
+      "title": "Swarm Optimization",
+      "task_id": null,
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\swarm-optimization\\submission.md",
+      "verify": null,
+      "variants": 1
+    },
+    {
+      "slug": "ticker",
+      "level": 6,
+      "title": "Ticker",
+      "task_id": "BqZ2kTFN7YcPMCNbNQNx",
+      "canonical_answer": "c2",
+      "submission": "D:\\AgentArena\\content\\tasks\\ticker\\submission.md",
+      "verify": null,
+      "variants": 3
+    },
+    {
+      "slug": "vector-db-retrieval",
+      "level": 4,
+      "title": "Vector DB: Retrieval Optimization",
+      "task_id": "vector-db-retrieval-optimization",
+      "canonical_answer": null,
+      "submission": "D:\\AgentArena\\content\\tasks\\vector-db-retrieval\\submission.md",
+      "verify": "D:\\AgentArena\\content\\tasks\\vector-db-retrieval\\verify.py",
+      "variants": 1
+    }
+  ],
+  "task_count": 30,
+  "with_submission": 28,
+  "with_verify": 23
+}

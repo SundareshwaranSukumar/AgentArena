@@ -1,8 +1,5 @@
 """
-Dynamic prompt engine for Agent Arena.
-
-Adapted from the presentation reference:
-https://github.com/xprilion/agent-arena-bot
+Dynamic prompt engine — optimized for precise, fast Arena submissions.
 """
 
 from __future__ import annotations
@@ -16,37 +13,33 @@ TASK_PATTERNS = {
     "debug": [
         "debug", "fix", "error", "bug", "issue", "broken", "fails",
         "exception", "traceback", "crash", "wrong", "incorrect", "not working",
-        "repair", "resolve", "troubleshoot",
     ],
     "explain": [
         "explain", "describe", "what is", "how does", "why", "difference between",
         "concept", "theory", "overview", "introduction", "compare", "contrast",
-        "elaborate", "clarify", "discuss",
     ],
     "optimize": [
         "optimize", "performance", "efficient", "slow", "bottleneck", "memory",
         "speed", "complexity", "scale", "improve", "faster", "latency",
-        "throughput", "resource", "cache", "compress", "reduce",
     ],
     "design": [
         "design", "architecture", "system", "database schema", "pattern",
-        "structure", "model", "diagram", "plan", "blueprint", "component",
-        "microservice", "flow", "sequence", "entity relationship",
+        "structure", "model", "diagram", "microservice",
     ],
     "test": [
         "test", "unit test", "pytest", "assert", "coverage", "mock", "testing",
-        "tdd", "spec", "validate", "verify", "bdd", "integration test",
-        "regression", "benchmark",
     ],
     "data": [
         "data", "csv", "json", "sql", "query", "database", "etl", "pipeline",
-        "transform", "clean", "analyze", "visualization", "chart", "pandas",
-        "dataframe", "dataset",
+        "pandas", "dataframe",
+    ],
+    "math": [
+        "calculate", "compute", "sum", "equation", "formula", "probability",
+        "percentage", "integer", "prime", "factorial", "modulo",
     ],
     "security": [
-        "security", "auth", "authentication", "authorization", "jwt", "oauth",
-        "encrypt", "hash", "vulnerability", "sanitize", "xss", "csrf",
-        "sql injection", "penetration", "secure",
+        "security", "auth", "jwt", "oauth", "encrypt", "hash", "vulnerability",
+        "xss", "csrf", "sql injection",
     ],
 }
 
@@ -62,105 +55,54 @@ def detect_task_type(title: str = "", description: str = "") -> str:
     return max(scores, key=scores.get)
 
 
-def _format_task(task: dict) -> str:
-    return "\n".join(
-        [
-            f"Title: {task.get('title', 'N/A')}",
-            f"Level: {task.get('level', 'N/A')}",
-            f"Points: {task.get('points', 'N/A')}",
-            f"Description:\n{task.get('description', 'N/A')}",
-        ]
-    )
-
-
 def build_task_prompt(task: dict, agent_id: str, task_id: str) -> str:
-    """Composite prompt: analyze → solve → submit in one turn."""
+    """Single-turn prompt: tool-verify → precise answer → submit."""
     task_type = detect_task_type(task.get("title", ""), task.get("description", ""))
+    title = task.get("title", "Task")
+    desc = task.get("description", "")
 
-    type_guidance = {
-        "code": (
-            "Write clean, commented code with type hints and error handling. "
-            "Use run_python to verify before submitting."
-        ),
-        "debug": (
-            "Identify root cause, provide fixed code, explain why the fix works."
-        ),
-        "explain": (
-            "Use clear structure, examples, and step-by-step breakdowns."
-        ),
-        "optimize": (
-            "Show before/after reasoning, optimized solution, and trade-offs."
-        ),
-        "design": (
-            "Provide architecture overview, components, data flow, and scalability notes."
-        ),
-        "test": (
-            "Provide complete tests with positive, negative, and edge cases."
-        ),
-        "data": (
-            "Provide pipeline logic, schema, validation, and sample outputs."
-        ),
-        "security": (
-            "Summarize threat model, secure implementation, and verification steps."
-        ),
-        "general": (
-            "Provide a complete, well-structured solution with reasoning and examples."
-        ),
-    }
-    guidance = type_guidance.get(task_type, type_guidance["general"])
+    tool_hint = {
+        "math": "Use calculate() for every number — never estimate.",
+        "code": "Use run_python() to verify output before submit.",
+        "debug": "Use run_python() to confirm the fix runs.",
+        "data": "Use run_python() or calculate() to validate results.",
+    }.get(task_type, "Use calculate/web_search/run_python when they improve accuracy.")
 
-    return f"""
-You have been assigned a new task. Solve it completely in this turn.
+    return f"""Solve this Arena task in ONE turn. Be fast and precise.
 
-TASK ({task_type.upper()}):
-{_format_task(task)}
+TYPE: {task_type.upper()}
+TITLE: {title}
+DESCRIPTION:
+{desc}
 
-HELPER TOOLS (use when they improve accuracy):
-- web_search — factual or current-information tasks
-- calculate — exact numeric expressions (never guess math)
-- run_python — verify algorithms or code before submitting
+SPEED RULES:
+1. {tool_hint}
+2. Structure submit_task content as:
+   **Answer:** <direct final result first, one line if possible>
+   **Solution:** <minimal steps — no fluff, no task restatement>
+   **Verification:** <tool output or proof, if used>
+3. Temperature is 0 — give exact values, code, and facts only.
+4. Call submit_task NOW with agent_id="{agent_id}", task_id="{task_id}".
+5. Do not ask questions. Do not skip unless truly impossible.
 
-INSTRUCTIONS:
-1. ANALYZE — Restate the problem, requirements, edge cases, and your approach.
-2. SOLVE — {guidance}
-3. REVIEW — Verify correctness, completeness, and clarity.
-4. SUBMIT — Call submit_task with:
-     agent_id = "{agent_id}"
-     task_id = "{task_id}"
-     content = <your complete answer>
-
-Aim for 90+/100. Do NOT stop after analysis. Call submit_task in this same turn.
-""".strip()
+Target score: 90+. Submit in this turn."""
 
 
 def build_system_prompt(agent_name: str, agent_stack: str) -> str:
-    """Base system instruction aligned with the official tutorial lifecycle."""
-    return f"""
-You are an expert autonomous agent competing in the Agent Arena evaluation system.
-Your goal is to solve tasks with high quality and advance through levels (score >= 70).
+    return f"""You are {agent_name}, a precision Arena solver ({agent_stack}).
 
-AVAILABLE TOOLS:
-- register_agent(name, stack) — register once at start; returns AGENT_ID
-- get_tasks(agent_id) — fetch current task JSON (sticky until skip/submit)
-- skip_task(agent_id, task_id) — abandon impossible or already-submitted tasks
-- submit_task(agent_id, task_id, content) — submit answer for AI scoring (0-100)
-- report_status() — summarize run progress
-- web_search(query) — search the web for facts
-- calculate(expression) — exact math evaluation
-- run_python(code) — sandboxed code execution for verification
+GOAL: Maximum score (90+) with minimum latency. Score >= 70 levels up.
 
-CORE PRINCIPLES:
-1. THOROUGHNESS — analyze deeply, handle edge cases, verify with tools
-2. QUALITY — aim for 90+/100; shallow answers score poorly
-3. AUTONOMY — do not ask for confirmation; state assumptions clearly
-4. PRECISION — use temperature-friendly factual answers; prefer tools over guesses
+TOOLS:
+- submit_task / get_tasks / skip_task / register_agent — Arena MCP
+- calculate — exact math (always for numbers)
+- run_python — verify code/logic before submit
+- web_search — only when facts are not in the task text
 
-RULES:
-- Never submit the same task_id twice
-- Always use task_id from the most recent get_tasks call
-- Score >= 70 triggers LEVEL_UP; tasks get harder each level
+BEHAVIOR:
+- Lead every answer with the direct result, then brief justification.
+- Never guess numbers or code output — use tools first.
+- No preamble, no "Certainly!", no repeating the question.
+- One task_id per submit. Autonomous — never ask the user anything.
 
-IDENTITY:
-- Agent Name: {agent_name}
-- Stack: {agent_stack}
-""".strip()
+Identity: {agent_name} | {agent_stack}"""

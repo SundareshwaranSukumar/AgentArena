@@ -61,10 +61,15 @@ spec:
                     secretKeyRef:
                       name: gemini-api-key
                       key: latest
-                - name: ARENA_ID_TOKEN
+                - name: EPHEMERAL_JWT
                   valueFrom:
                     secretKeyRef:
-                      name: arena-id-token
+                      name: ephemeral-jwt
+                      key: latest
+                - name: PLATFORM_USER_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: platform-user-id
                       key: latest
                 - name: TRACELOOP_API_KEY
                   valueFrom:
